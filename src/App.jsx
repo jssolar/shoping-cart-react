@@ -1,21 +1,21 @@
 // import './App.css'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import Products from './components/Products'
 import { products as initialProducts } from './mocks/products.json'
-import Header from './components/Header'
+import {Header} from './components/Header'
+import { Footer } from './components/Footer'
+import { IS_DEVELOPMENT } from './config'
+import Filters from './components/Filters'
+import { FiltersContext } from './conext/filters'
 
 
-function App() {
 
-  const [products] = useState(initialProducts)
+function useFilters () {
+  const {filters, setFilters} = useContext(FiltersContext)
 
-  const [filters, setFilters] = [{
-    category: 'all',
-    minPrice: 0
-  }]
 
   const filterProducts = (products) => {
-    return products.filter((product) => {
+    return products.filter(product => {
       return (
         product.price >= filters.minPrice &&
         (
@@ -25,14 +25,20 @@ function App() {
       )
     })
   }
+  return { filters, filterProducts, setFilters}
+}
 
+function App() {
+
+  const [products] = useState(initialProducts)
+  const { filters, filterProducts,  setFilters} = useFilters()
   const filteredProducts = filterProducts(products)
 
   return (
     <>
-      <Header />
+      <Header changeFilters={setFilters} />
       <Products products={filteredProducts} />
-      <h1>hola desde h1</h1>
+      { IS_DEVELOPMENT && <Footer filters={filters} />}
     </>
   )
 }
