@@ -1,45 +1,31 @@
 // import './App.css'
-import { useContext, useState } from 'react'
+import {  useState } from 'react'
 import Products from './components/Products'
 import { products as initialProducts } from './mocks/products.json'
 import {Header} from './components/Header'
 import { Footer } from './components/Footer'
 import { IS_DEVELOPMENT } from './config'
-import Filters from './components/Filters'
-import { FiltersContext } from './conext/filters'
+import { useFilters } from './hooks/useFilters'
+import { Cart } from './components/Cart'
+import { CartProvider } from './conext/cart'
 
 
 
-function useFilters () {
-  const {filters, setFilters} = useContext(FiltersContext)
 
-
-  const filterProducts = (products) => {
-    return products.filter(product => {
-      return (
-        product.price >= filters.minPrice &&
-        (
-          filters.category === 'all' ||
-          product.category === filters.category
-        )
-      )
-    })
-  }
-  return { filters, filterProducts, setFilters}
-}
 
 function App() {
 
   const [products] = useState(initialProducts)
-  const { filters, filterProducts,  setFilters} = useFilters()
+  const { filters, filterProducts } = useFilters()
   const filteredProducts = filterProducts(products)
 
   return (
-    <>
-      <Header changeFilters={setFilters} />
+    <CartProvider>
+      <Header  />
       <Products products={filteredProducts} />
-      { IS_DEVELOPMENT && <Footer filters={filters} />}
-    </>
+      {IS_DEVELOPMENT && <Footer filters={filters} />}
+      <Cart />
+    </CartProvider>
   )
 }
 

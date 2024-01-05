@@ -1,12 +1,12 @@
-import Filters from './Filters'
+import {Filters} from './Filters.jsx'
 
-const Header = ({changeFilters}) => {
+export  const Header = () => {
   return (
     <header>
       <h1>React Shop 🛒</h1>
-      <Filters changeFilters={changeFilters} />
+      <Filters />
     </header >
   )
 }
 
-export default Header
+
